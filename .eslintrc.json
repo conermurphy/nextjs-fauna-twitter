@@ -1,0 +1,44 @@
+{
+    "extends": [
+      "wesbos",
+      "prettier"
+    ],
+    "rules": {
+      "quotes": [
+        2,
+        "single",
+        {
+          "avoidEscape": true
+        }
+      ],
+      "no-unused-expressions": [
+        1,
+        {
+          "allowTernary": true
+        }
+      ],
+      "arrow-body-style": ["warn", "as-needed"],
+      "prettier/prettier": [
+        "error",
+        {
+          "trailingComma": "es5",
+          "singleQuote": true,
+          "printWidth": 80,
+          "endOfLine": "auto"
+        }
+      ],
+      "react/prop-types": 0,
+      "jsx-a11y/label-has-associated-control": [ "error", {
+        "required": {
+          "some": [ "nesting", "id"  ]
+        }
+      }],
+      "jsx-a11y/label-has-for": [ "error", {
+        "required": {
+          "some": [ "nesting", "id"  ]
+        }
+      }],
+      "template-curly-spacing" : "off",
+      "indent": "off"
+    }
+  }
