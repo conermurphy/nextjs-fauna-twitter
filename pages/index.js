@@ -3,7 +3,6 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import DataDisplay from '../components/DataDisplay';
 import TwitterForm from '../components/TwitterForm';
-import { getUsername } from '../lib/fauna';
 
 const Container = styled.main`
   text-align: left;
@@ -37,8 +36,8 @@ const AppHead = () => (
   </Head>
 );
 
-function Home({ initialData }) {
-  const [dataToDisplay, setDataToDisplay] = useState(initialData);
+function Home() {
+  const [dataToDisplay, setDataToDisplay] = useState();
   const [statusMessage, setStatusMessage] = useState(
     'Please enter a Twitter username to lookup.'
   );
@@ -64,10 +63,3 @@ function Home({ initialData }) {
   );
 }
 export default Home;
-
-export const getStaticProps = async () => ({
-  props: {
-    initialData: await getUsername('@MrConerMurphy'),
-  },
-  revalidate: 1,
-});
