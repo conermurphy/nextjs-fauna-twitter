@@ -12,7 +12,7 @@ const FormContainer = styled.form`
   display: flex;
   flex-flow: row wrap;
   justify-content: left;
-  gap: 2rem;
+  gap: 0.5rem 2rem;
   margin: 2rem 0;
   width: fit-content;
 
@@ -24,7 +24,7 @@ const FormContainer = styled.form`
 
   input {
     padding: 1rem;
-    width: clamp(200px, 80vw, 400px);
+    width: clamp(200px, 40vw, 400px);
     border: 1px solid rgba(0, 0, 0, 0.3);
   }
 
