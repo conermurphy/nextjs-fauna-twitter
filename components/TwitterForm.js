@@ -3,7 +3,7 @@ import React from 'react';
 import styled from 'styled-components';
 import fetchRequest from '../utils/fetchRequest';
 import { server } from '../config';
-import getUsernameFlow from '../utils/usernameFlow';
+import usernameFlow from '../utils/usernameFlow';
 import useForm from '../utils/useForm';
 
 const TWITTER_PATH = `${server}/api/twitter`;
@@ -54,7 +54,7 @@ export default function TwitterForm({ updateData, setStatusMessage }) {
     try {
       setStatusMessage('Looking up Twitter username in Fauna.');
       // 1a. Try fetch data from Fauna
-      const initialData = await getUsernameFlow({
+      const initialData = await usernameFlow({
         typeOfRequest: 'fetchUser',
         data: {
           username: twitterHandle,
@@ -72,7 +72,7 @@ export default function TwitterForm({ updateData, setStatusMessage }) {
           'Fauna data outdated, fetching new data from Twitter.'
         );
         // 2a. Update the data on Fauna
-        await getUsernameFlow({
+        await usernameFlow({
           typeOfRequest: 'updateUser',
           data: {
             id: initialData._id,
@@ -83,7 +83,7 @@ export default function TwitterForm({ updateData, setStatusMessage }) {
 
         // 2b. Refetch the new username data on Fauna
         setStatusMessage('Fetching updated data from Fauna.');
-        const updatedData = await getUsernameFlow({
+        const updatedData = await usernameFlow({
           typeOfRequest: 'fetchUser',
           data: {
             username: twitterHandle,
@@ -104,7 +104,7 @@ export default function TwitterForm({ updateData, setStatusMessage }) {
       setStatusMessage(
         'Username not in Fauna, fetching data from Twitter and adding to Fauna.'
       );
-      await getUsernameFlow({
+      await usernameFlow({
         typeOfRequest: 'createUser',
         data: {
           username: twitterHandle,
@@ -113,7 +113,7 @@ export default function TwitterForm({ updateData, setStatusMessage }) {
       });
 
       // 3b. Fetching the newly added data from Fauna
-      const newData = await getUsernameFlow({
+      const newData = await usernameFlow({
         typeOfRequest: 'fetchUser',
         data: {
           username: twitterHandle,
