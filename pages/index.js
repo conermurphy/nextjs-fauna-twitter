@@ -38,16 +38,23 @@ const AppHead = () => (
 
 function Home({ initialData }) {
   const [dataToDisplay, setDataToDisplay] = useState(initialData);
+  const [statusMessage, setStatusMessage] = useState(
+    'Please enter a Twitter username to lookup.'
+  );
   return (
     <Container>
       <AppHead />
       <div className="pageHeaderContainer">
         <h1>Twitter Account Engagement Lookup</h1>
         <p>
-          Put in a Twitter account handle (e.g. @MrConerMurphy) into the form
+          Put in a Twitter account handle (e.g. @mrconermurphy) into the form
           below to see who they've engaged with the most recently.
         </p>
-        <TwitterForm updateData={setDataToDisplay} />
+        <TwitterForm
+          updateData={setDataToDisplay}
+          setStatusMessage={setStatusMessage}
+        />
+        <p>{statusMessage}</p>
       </div>
       <DataDisplay data={dataToDisplay} />
     </Container>

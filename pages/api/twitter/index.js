@@ -34,12 +34,12 @@ export default async function handler({ body, method }, res) {
       const { data } = await fetchData(tweetsEndpoint, 'v2UserTweetsJS');
 
       // eslint-disable-next-line
-      const regexp = /\B\@\w+/g;
+      const regexp = /\@(?=.*[a-z0-9_])(?!.*[A-Z])\w+/g;
 
       const mentionedUsers = data
         .reduce((acc, cur) => {
           const { text } = cur;
-          const usersInTweet = [...text.matchAll(regexp)].flat();
+          const usersInTweet = [...text.toLowerCase().matchAll(regexp)].flat();
 
           usersInTweet.map((user) => {
             if (user === body) return;
