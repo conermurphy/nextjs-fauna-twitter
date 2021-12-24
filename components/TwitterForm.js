@@ -134,6 +134,7 @@ export default function TwitterForm({ updateData, setStatusMessage }) {
         name="twitterHandle"
         value={twitterHandle.trim()}
         onChange={updateValue}
+        // Regex to ensure the input matches: starting with @, contains only lowercase letters, numbers and _
         pattern="@(?=.*[a-z0-9_])(?!.*[A-Z])\w+.*"
         type="text"
         title="Please enter a Twitter username starting with @ and lowercase. E.g. @mrconermurphy"
