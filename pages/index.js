@@ -6,10 +6,7 @@ import TwitterForm from '../components/TwitterForm';
 import { getUsername } from '../lib/fauna';
 
 const Container = styled.main`
-  display: flex;
-  flex-flow: column wrap;
-  align-items: center;
-  text-align: center;
+  text-align: left;
   font-family: Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
 
   button,
@@ -19,8 +16,12 @@ const Container = styled.main`
 
   .pageHeaderContainer {
     background-color: #cbd5e1;
-    border-radius: 10px;
+    border-radius: 20px;
     padding: 2rem 5rem;
+
+    h1 {
+      width: fit-content;
+    }
 
     p {
       max-width: 600px;
@@ -54,7 +55,9 @@ function Home({ initialData }) {
           updateData={setDataToDisplay}
           setStatusMessage={setStatusMessage}
         />
-        <p>{statusMessage}</p>
+        <p>
+          <b>Status Message:</b> {statusMessage}
+        </p>
       </div>
       <DataDisplay data={dataToDisplay} />
     </Container>

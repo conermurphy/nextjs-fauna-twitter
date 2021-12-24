@@ -11,9 +11,10 @@ const TWITTER_PATH = `${server}/api/twitter`;
 const FormContainer = styled.form`
   display: flex;
   flex-flow: row wrap;
-  justify-content: center;
+  justify-content: left;
   gap: 2rem;
-  margin-top: 2rem;
+  margin: 2rem 0;
+  width: fit-content;
 
   input,
   button {
@@ -23,15 +24,18 @@ const FormContainer = styled.form`
 
   input {
     padding: 1rem;
+    width: clamp(200px, 80vw, 400px);
+    border: 1px solid rgba(0, 0, 0, 0.3);
   }
 
-  button {
+  input[type='submit'] {
     padding: 1rem 2rem;
     background-color: #475569;
     color: #fff;
     font-weight: bold;
     font-size: 16px;
     cursor: pointer;
+    width: 200px;
   }
 `;
 

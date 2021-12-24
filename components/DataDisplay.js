@@ -6,14 +6,21 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  width: clamp(100px, 80vw, 600px);
+  margin: 0 5rem;
 
   p,
   li {
     font-size: 18px;
   }
 
+  .engagementLabel {
+    font-weight: bold;
+  }
+
   ol {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     margin: 0;
     padding: 0;
 
@@ -27,28 +34,20 @@ const Container = styled.div`
 export default function DataDisplay({ data }) {
   return data ? (
     <Container>
-      <h2>Viewing data for {data.username}</h2>
+      <h2>Engagement data for {data.username}</h2>
       <p>
-        {`Data created on ${formatDate(
-          new Date(data.createdAt),
-          "d MMM yyyy 'at' h:mm bb"
-        )}
-        `}
+        <span>{'Data created on '}</span>
+        <b>{`${formatDate(new Date(data.createdAt), 'd MMM yyyy')}`}</b>
+        <span>{' | Data last updated on '}</span>
+        <b>{`${formatDate(new Date(data.lastUpdatedAt), 'd MMM yyyy')}`}</b>
       </p>
-      <p>
-        {`Data last updated on ${formatDate(
-          new Date(data.lastUpdatedAt),
-          "d MMM yyyy 'at' h:mm bb"
-        )}
-        `}
-      </p>
-      <p>Most Engagement</p>
+      <p className="engagementLabel">Most Engagement</p>
       <ol>
         {data.engagementList.map((person) => (
           <li key={person}>{person}</li>
         ))}
       </ol>
-      <p>Least Engagement</p>
+      <p className="engagementLabel">Least Engagement</p>
     </Container>
   ) : null;
 }
