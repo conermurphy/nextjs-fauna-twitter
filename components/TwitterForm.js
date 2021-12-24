@@ -3,10 +3,10 @@ import React from 'react';
 import styled from 'styled-components';
 import fetchRequest from '../utils/fetchRequest';
 import { server } from '../config';
-import usernameFlow from '../utils/usernameFlow';
 import useForm from '../utils/useForm';
 
 const TWITTER_PATH = `${server}/api/twitter`;
+const USERNAME_PATH = `${server}/api/db`;
 
 const FormContainer = styled.form`
   display: flex;
@@ -54,12 +54,15 @@ export default function TwitterForm({ updateData, setStatusMessage }) {
     try {
       setStatusMessage('Looking up Twitter username in Fauna.');
       // 1a. Try fetch data from Fauna
-      const initialData = await usernameFlow({
-        typeOfRequest: 'fetchUser',
-        data: {
-          username: twitterHandle,
+      const initialData = await fetchRequest(
+        {
+          typeOfRequest: 'fetchUser',
+          data: {
+            username: twitterHandle,
+          },
         },
-      });
+        USERNAME_PATH
+      );
 
       // 2. Check the lastUpdatedAt property of the data from Fauna, if more than 1 one day behind today, refetch the data from Twitter and update Fauna
       if (
@@ -72,23 +75,29 @@ export default function TwitterForm({ updateData, setStatusMessage }) {
           'Fauna data outdated, fetching new data from Twitter.'
         );
         // 2a. Update the data on Fauna
-        await usernameFlow({
-          typeOfRequest: 'updateUser',
-          data: {
-            id: initialData._id,
-            username: twitterHandle,
-            engagementList: await fetchRequest(twitterHandle, TWITTER_PATH),
+        await fetchRequest(
+          {
+            typeOfRequest: 'updateUser',
+            data: {
+              id: initialData._id,
+              username: twitterHandle,
+              engagementList: await fetchRequest(twitterHandle, TWITTER_PATH),
+            },
           },
-        });
+          USERNAME_PATH
+        );
 
         // 2b. Refetch the new username data on Fauna
         setStatusMessage('Fetching updated data from Fauna.');
-        const updatedData = await usernameFlow({
-          typeOfRequest: 'fetchUser',
-          data: {
-            username: twitterHandle,
+        const updatedData = await fetchRequest(
+          {
+            typeOfRequest: 'fetchUser',
+            data: {
+              username: twitterHandle,
+            },
           },
-        });
+          USERNAME_PATH
+        );
 
         // 2c. Set the updatedData to be displayed on the page.
         updateData(updatedData);
@@ -104,21 +113,27 @@ export default function TwitterForm({ updateData, setStatusMessage }) {
       setStatusMessage(
         'Username not in Fauna, fetching data from Twitter and adding to Fauna.'
       );
-      await usernameFlow({
-        typeOfRequest: 'createUser',
-        data: {
-          username: twitterHandle,
-          engagementList: await fetchRequest(twitterHandle, TWITTER_PATH),
+      await fetchRequest(
+        {
+          typeOfRequest: 'createUser',
+          data: {
+            username: twitterHandle,
+            engagementList: await fetchRequest(twitterHandle, TWITTER_PATH),
+          },
         },
-      });
+        USERNAME_PATH
+      );
 
       // 3b. Fetching the newly added data from Fauna
-      const newData = await usernameFlow({
-        typeOfRequest: 'fetchUser',
-        data: {
-          username: twitterHandle,
+      const newData = await fetchRequest(
+        {
+          typeOfRequest: 'fetchUser',
+          data: {
+            username: twitterHandle,
+          },
         },
-      });
+        USERNAME_PATH
+      );
 
       // 3. Return the new data from Fauna
       updateData(newData);
