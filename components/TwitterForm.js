@@ -74,8 +74,9 @@ export default function TwitterForm({ updateData, setStatusMessage }) {
         setStatusMessage(
           'Fauna data outdated, fetching new data from Twitter.'
         );
+
         // 2a. Update the data on Fauna
-        await fetchRequest(
+        const updatedData = await fetchRequest(
           {
             typeOfRequest: 'updateUser',
             data: {
@@ -87,21 +88,9 @@ export default function TwitterForm({ updateData, setStatusMessage }) {
           DB_PATH
         );
 
-        // 2b. Refetch the new username data on Fauna
-        setStatusMessage('Fetching updated data from Fauna.');
-        const updatedData = await fetchRequest(
-          {
-            typeOfRequest: 'fetchUser',
-            data: {
-              username: twitterHandle,
-            },
-          },
-          DB_PATH
-        );
-
         // 2c. Set the updatedData to be displayed on the page.
         updateData(updatedData);
-        setStatusMessage('Looking up complete.');
+        setStatusMessage('Look up complete.');
         return;
       }
 
@@ -113,7 +102,7 @@ export default function TwitterForm({ updateData, setStatusMessage }) {
       setStatusMessage(
         'Username not in Fauna, fetching data from Twitter and adding to Fauna.'
       );
-      await fetchRequest(
+      const newData = await fetchRequest(
         {
           typeOfRequest: 'createUser',
           data: {
@@ -124,20 +113,9 @@ export default function TwitterForm({ updateData, setStatusMessage }) {
         DB_PATH
       );
 
-      // 3b. Fetching the newly added data from Fauna
-      const newData = await fetchRequest(
-        {
-          typeOfRequest: 'fetchUser',
-          data: {
-            username: twitterHandle,
-          },
-        },
-        DB_PATH
-      );
-
       // 3. Return the new data from Fauna
       updateData(newData);
-      setStatusMessage('Looking up complete.');
+      setStatusMessage('Look up complete.');
     }
   }
 
