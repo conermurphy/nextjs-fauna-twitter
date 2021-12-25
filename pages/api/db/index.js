@@ -7,7 +7,7 @@ import {
 export default async function handler({ body, method }, res) {
   const handlers = {
     POST: async () => {
-      // 1. Destructure parameters from the request from usernameFlow.js
+      // 1. Destructure parameters from the request from request
       const {
         typeOfRequest,
         data: { username, engagementList, id },

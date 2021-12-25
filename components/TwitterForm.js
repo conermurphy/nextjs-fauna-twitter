@@ -6,7 +6,7 @@ import { server } from '../config';
 import useForm from '../utils/useForm';
 
 const TWITTER_PATH = `${server}/api/twitter`;
-const USERNAME_PATH = `${server}/api/db`;
+const DB_PATH = `${server}/api/db`;
 
 const FormContainer = styled.form`
   display: flex;
@@ -61,7 +61,7 @@ export default function TwitterForm({ updateData, setStatusMessage }) {
             username: twitterHandle,
           },
         },
-        USERNAME_PATH
+        DB_PATH
       );
 
       // 2. Check the lastUpdatedAt property of the data from Fauna, if more than 1 one day behind today, refetch the data from Twitter and update Fauna
@@ -84,7 +84,7 @@ export default function TwitterForm({ updateData, setStatusMessage }) {
               engagementList: await fetchRequest(twitterHandle, TWITTER_PATH),
             },
           },
-          USERNAME_PATH
+          DB_PATH
         );
 
         // 2b. Refetch the new username data on Fauna
@@ -96,7 +96,7 @@ export default function TwitterForm({ updateData, setStatusMessage }) {
               username: twitterHandle,
             },
           },
-          USERNAME_PATH
+          DB_PATH
         );
 
         // 2c. Set the updatedData to be displayed on the page.
@@ -121,7 +121,7 @@ export default function TwitterForm({ updateData, setStatusMessage }) {
             engagementList: await fetchRequest(twitterHandle, TWITTER_PATH),
           },
         },
-        USERNAME_PATH
+        DB_PATH
       );
 
       // 3b. Fetching the newly added data from Fauna
@@ -132,7 +132,7 @@ export default function TwitterForm({ updateData, setStatusMessage }) {
             username: twitterHandle,
           },
         },
-        USERNAME_PATH
+        DB_PATH
       );
 
       // 3. Return the new data from Fauna
