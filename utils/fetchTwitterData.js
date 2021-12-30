@@ -41,7 +41,7 @@ export default async function fetchTwitterData({ username }) {
     .reduce((acc, cur) => {
       const { text } = cur;
 
-      // 4a. Using the regex on line 17, find all the usernames in the tweets anc combine them into one array.
+      // 4a. Using the regex on line 17, find all the usernames in the tweets and combine them into one array.
       const usersInTweet = [...text.toLowerCase().matchAll(regexp)].flat();
 
       usersInTweet.map((user) => {

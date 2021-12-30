@@ -55,9 +55,11 @@ export default async function handler({ body, method }, res) {
     },
   };
 
+  // If the request isn't a POST request then return and give a 405 error.
   if (!handlers[method]) {
     return res.status(405).end();
   }
 
+  // Await any functions defined in the handler if the request method is a property within it.
   await handlers[method]();
 }
