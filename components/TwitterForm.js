@@ -1,11 +1,9 @@
-import { differenceInCalendarDays } from 'date-fns';
 import React from 'react';
 import styled from 'styled-components';
 import fetchRequest from '../utils/fetchRequest';
 import { server } from '../config';
 import useForm from '../utils/useForm';
 
-const TWITTER_PATH = `${server}/api/twitter`;
 const DB_PATH = `${server}/api/db`;
 
 const FormContainer = styled.form`
@@ -51,72 +49,17 @@ export default function TwitterForm({ updateData, setStatusMessage }) {
 
     setStatusMessage('Looking up Twitter username...');
 
-    try {
-      setStatusMessage('Looking up Twitter username in Fauna.');
-      // 1a. Try fetch data from Fauna
-      const initialData = await fetchRequest(
-        {
-          typeOfRequest: 'fetchUser',
-          data: {
-            username: twitterHandle,
-          },
+    const data = await fetchRequest(
+      {
+        data: {
+          username: twitterHandle,
         },
-        DB_PATH
-      );
+      },
+      DB_PATH
+    );
 
-      // 2. Check the lastUpdatedAt property of the data from Fauna, if more than 1 one day behind today, refetch the data from Twitter and update Fauna
-      if (
-        differenceInCalendarDays(
-          new Date(),
-          new Date(initialData.lastUpdatedAt)
-        ) > 1
-      ) {
-        setStatusMessage(
-          'Fauna data outdated, fetching new data from Twitter.'
-        );
-
-        // 2a. Update the data on Fauna
-        const updatedData = await fetchRequest(
-          {
-            typeOfRequest: 'updateUser',
-            data: {
-              id: initialData._id,
-              username: twitterHandle,
-              engagementList: await fetchRequest(twitterHandle, TWITTER_PATH),
-            },
-          },
-          DB_PATH
-        );
-
-        // 2c. Set the updatedData to be displayed on the page.
-        updateData(updatedData);
-        setStatusMessage('Look up complete.');
-        return;
-      }
-
-      // 1b. If the data doesn't need to be updated then return the initial data.
-      updateData(initialData);
-      setStatusMessage('Looking up complete');
-    } catch (err) {
-      // 3a. If the user doesn't exist on Fauna, it will error and we will catch it here and create a new user by fetching the data from Twitter and updating Fauna
-      setStatusMessage(
-        'Username not in Fauna, fetching data from Twitter and adding to Fauna.'
-      );
-      const newData = await fetchRequest(
-        {
-          typeOfRequest: 'createUser',
-          data: {
-            username: twitterHandle,
-            engagementList: await fetchRequest(twitterHandle, TWITTER_PATH),
-          },
-        },
-        DB_PATH
-      );
-
-      // 3. Return the new data from Fauna
-      updateData(newData);
-      setStatusMessage('Look up complete.');
-    }
+    updateData(data);
+    setStatusMessage('Look up complete.');
   }
 
   return (

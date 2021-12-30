@@ -1,3 +1,5 @@
+import { differenceInCalendarDays } from 'date-fns';
+import fetchTwitterData from '../../../utils/fetchTwitterData';
 import {
   getUsername,
   createUsername,
@@ -9,39 +11,47 @@ export default async function handler({ body, method }, res) {
     POST: async () => {
       // 1. Destructure parameters from the request from request
       const {
-        typeOfRequest,
-        data: { username, engagementList, id },
+        data: { username },
       } = body;
 
       // 2a. Fetch the username from Fauna
-      if (typeOfRequest === 'fetchUser') {
-        const data = await getUsername(username);
-        res.json(data);
+      const initialData = await getUsername(username);
+
+      // 2b. If initialData exists then check if it's out of date.
+      if (initialData) {
+        // 2b. Check if lastUpdated date is more/less than 1 day
+        if (
+          differenceInCalendarDays(
+            new Date(),
+            new Date(initialData.lastUpdatedAt)
+          ) > 1
+        ) {
+          // 2c. If more than 1 day, update data.
+          const updatedData = await updateUsername({
+            data: {
+              username,
+              engagementList: await fetchTwitterData({ username }),
+              lastUpdatedAt: new Date(),
+            },
+            id: initialData._id,
+          });
+          res.json(updatedData);
+          return;
+        }
+        // 2d. Return initialData if newer than 1 day.
+
+        res.json(initialData);
+        return;
       }
 
-      // 2b. Create a new username on Fauna
-      if (typeOfRequest === 'createUser') {
-        const data = await createUsername({
-          username,
-          engagementList,
-          createdAt: new Date(),
-          lastUpdatedAt: new Date(),
-        });
-        res.json(data);
-      }
-
-      // 2c. Update the user on Fauna
-      if (typeOfRequest === 'updateUser') {
-        const data = await updateUsername({
-          data: {
-            username,
-            engagementList,
-            lastUpdatedAt: new Date(),
-          },
-          id,
-        });
-        res.json(data);
-      }
+      // 3a. If data doesn't exist, create new data.
+      const newData = await createUsername({
+        username,
+        engagementList: await fetchTwitterData({ username }),
+        createdAt: new Date(),
+        lastUpdatedAt: new Date(),
+      });
+      res.json(newData);
     },
   };
 
