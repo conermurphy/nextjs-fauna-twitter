@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import fetchRequest from '../utils/fetchRequest';
 import { server } from '../config';
 import useForm from '../utils/useForm';
 
@@ -49,14 +48,8 @@ export default function TwitterForm({ updateData, setStatusMessage }) {
 
     setStatusMessage('Looking up Twitter username...');
 
-    const data = await fetchRequest(
-      {
-        data: {
-          username: twitterHandle,
-        },
-      },
-      DB_PATH
-    );
+    const dbResponse = await fetch(`${DB_PATH}?username=${twitterHandle}`);
+    const data = await dbResponse.json();
 
     updateData(data);
     setStatusMessage('Look up complete.');

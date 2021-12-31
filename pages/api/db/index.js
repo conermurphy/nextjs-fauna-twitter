@@ -6,13 +6,11 @@ import {
   updateUsername,
 } from '../../../lib/fauna';
 
-export default async function handler({ body, method }, res) {
+export default async function handler({ query, method }, res) {
   const handlers = {
-    POST: async () => {
-      // 1. Destructure parameters from the request from request
-      const {
-        data: { username },
-      } = body;
+    GET: async () => {
+      // 1. Destructure query parameters from the request
+      const { username } = query;
 
       // 2a. Fetch the username from Fauna
       const initialData = await getUsername(username);
